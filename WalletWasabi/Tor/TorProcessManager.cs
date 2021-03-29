@@ -47,6 +47,22 @@ namespace WalletWasabi.Tor
 			return TorSocks5Client.IsTorRunningAsync();
 		}
 
+		private async void StartTorSysTray(int torProcessId)
+		{
+			var startInfo = new ProcessStartInfo
+			{
+				FileName = "..\\..\\..\\..\\WalletWasabi.Fluent.TorSysTray\\bin\\Debug\\net5.0-windows\\WalletWasabi.Fluent.TorSysTray.exe",
+				Arguments = torProcessId.ToString(),
+				UseShellExecute = false,
+				CreateNoWindow = true,
+				RedirectStandardOutput = true
+			};
+
+			var sysTrayProcess = new ProcessAsync(startInfo);
+
+			sysTrayProcess.Start();
+		}
+
 		/// <summary>
 		/// Starts Tor process if it is not running already.
 		/// </summary>
@@ -133,6 +149,9 @@ namespace WalletWasabi.Tor
 					}
 
 					Logger.LogInfo("Tor is running.");
+
+					StartTorSysTray(TorProcess.Id);
+
 					return true;
 				}
 			}
